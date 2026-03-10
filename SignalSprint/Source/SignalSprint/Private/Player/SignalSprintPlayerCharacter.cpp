@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "Gameplay/SignalSprintGameState.h"
+
 ASignalSprintPlayerCharacter::ASignalSprintPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -65,6 +67,15 @@ void ASignalSprintPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		{
 			EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASignalSprintPlayerCharacter::Move);
 		}
+		if (DebugAddScoreAction)
+		{
+			EnhancedInput->BindAction(DebugAddScoreAction, ETriggerEvent::Started, this, &ASignalSprintPlayerCharacter::DebugAddScore);
+		}
+
+		if (DebugAddStrikeAction)
+		{
+			EnhancedInput->BindAction(DebugAddStrikeAction, ETriggerEvent::Started, this, &ASignalSprintPlayerCharacter::DebugAddStrike);
+		}
 	}
 }
 
@@ -90,3 +101,18 @@ void ASignalSprintPlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void ASignalSprintPlayerCharacter::DebugAddScore()
+{
+	if (ASignalSprintGameState* GameState = GetWorld()->GetGameState<ASignalSprintGameState>())
+	{
+		GameState->AddScore(1);
+	}
+}
+
+void ASignalSprintPlayerCharacter::DebugAddStrike()
+{
+	if (ASignalSprintGameState* GameState = GetWorld()->GetGameState<ASignalSprintGameState>())
+	{
+		GameState->AddStrike(1);
+	}
+}

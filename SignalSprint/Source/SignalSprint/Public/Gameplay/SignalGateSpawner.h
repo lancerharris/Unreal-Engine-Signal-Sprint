@@ -33,7 +33,7 @@ protected:
 	float SpawnDistanceAhead = 2000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	float LaneHalfWidth = 1000.0f;
+	TArray<float> LaneOffsets = {-800.0f, 0.0f, 800.0f};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
 	float SpawnZOffset = 100.0f;

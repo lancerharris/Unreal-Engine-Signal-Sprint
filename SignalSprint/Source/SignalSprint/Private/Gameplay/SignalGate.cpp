@@ -14,9 +14,17 @@ ASignalGate::ASignalGate()
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent = SceneRoot;
 
-	GateMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateMesh"));
-	GateMesh->SetupAttachment(SceneRoot);
-	GateMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	LeftPillar = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftPillar"));
+	LeftPillar->SetupAttachment(SceneRoot);
+	LeftPillar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	RightPillar = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightPillar"));
+	RightPillar->SetupAttachment(SceneRoot);
+	RightPillar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	TopBar = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TopBar"));
+	TopBar->SetupAttachment(SceneRoot);
+	TopBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(SceneRoot);
@@ -25,5 +33,5 @@ ASignalGate::ASignalGate()
 	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	InitialLifeSpan = 8.0f;
+	InitialLifeSpan = 15.0f;
 }

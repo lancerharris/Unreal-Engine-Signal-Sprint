@@ -40,18 +40,15 @@ void ASignalGateSpawner::Tick(float DeltaTime)
 
 void ASignalGateSpawner::TrySpawnGate()
 {
-	if (!CachedPlayer || !GateClass)
-	{
-		return;
-	}
+	if (!CachedPlayer || !GateClass) return;
+	if (LaneOffsets.Num() == 0) return;
 
 	const FVector PlayerLocation = CachedPlayer->GetActorLocation();
 
-	const float RandomY = FMath::FRandRange(-LaneHalfWidth, LaneHalfWidth);
+	const int32 LaneIndex = FMath::RandRange(0, LaneOffsets.Num() - 1);
+	const float LaneY = LaneOffsets[LaneIndex];
 
-	FVector SpawnLocation = PlayerLocation + FVector(SpawnDistanceAhead, RandomY - PlayerLocation.Y, SpawnZOffset);
-	UE_LOG(LogTemp, Warning, TEXT("Spawn gate at X=%.1f Y=%.1f Z=%.1f"),
-		SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+	FVector SpawnLocation = PlayerLocation + FVector(SpawnDistanceAhead, LaneY - PlayerLocation.Y, SpawnZOffset);
 	const FRotator SpawnRotation = FRotator::ZeroRotator;
 
 	FActorSpawnParameters SpawnParams;
