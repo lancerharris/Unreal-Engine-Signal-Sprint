@@ -4,12 +4,15 @@
 #include "Gameplay/SignalGate.h"
 
 #include "Components/BoxComponent.h"
+#include "Player/SignalSprintPlayerCharacter.h"
+#include "Gameplay/SignalSprintGameState.h"
 
 
 // Sets default values
 ASignalGate::ASignalGate()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	InitialLifeSpan = 15.0f;
 
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent = SceneRoot;
@@ -33,5 +36,39 @@ ASignalGate::ASignalGate()
 	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
 	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	InitialLifeSpan = 15.0f;
+}
+
+void ASignalGate::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASignalGate::HandleTriggerOverlap);
+}
+
+void ASignalGate::HandleTriggerOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (bHasBeenTriggered) return;
+	if (ASignalSprintPlayerCharacter* PlayerCharacter = Cast<ASignalSprintPlayerCharacter>(OtherActor))
+	{
+		bHasBeenTriggered = true;
+		ProcessPlayerPassedGate(PlayerCharacter);
+	}
+
+}
+
+void ASignalGate::ProcessPlayerPassedGate(ASignalSprintPlayerCharacter* PlayerCharacter)
+{
+	FSignalGateResolution GateResolution;
+	GateResolution.Player = PlayerCharacter;
+	GateResolution.Result = GateResult;
+	if (GateResult == ESignalGateResult::Success)
+	{
+		GateResolution.Amount = 2;
+	} else if (GateResult == ESignalGateResult::Failure)
+	{
+		GateResolution.Amount = 1;
+	}
+	GateResolution.Gate = this;
+	OnGateResolved.Broadcast(GateResolution);
 }

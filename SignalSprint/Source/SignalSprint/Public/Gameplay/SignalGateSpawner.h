@@ -6,8 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "SignalGateSpawner.generated.h"
 
+class USignalGateListener;
+class AGateVFXListener;
+class AGateCameraFeedbackListener;
+struct FSignalGateResolution;
+
+class ASignalSprintGameState;
 class ASignalGate;
 class ASignalSprintPlayerCharacter;
+class AGateAudioListener;
 
 UCLASS()
 class SIGNALSPRINT_API ASignalGateSpawner : public AActor
@@ -20,12 +27,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void TrySpawnGate();
+	
+	void ProcessGateResolutionPayload(const FSignalGateResolution& Resolution);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	TSubclassOf<ASignalGate> GateClass;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Spawning")
+	TArray<TSubclassOf<ASignalGate>> GateClasses;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
 	float SpawnInterval = 2.0f;
 
@@ -42,4 +52,13 @@ protected:
 	ASignalSprintPlayerCharacter* CachedPlayer = nullptr;
 
 	float TimeUntilNextSpawn = 0.0f;
+
+	UPROPERTY()
+	ASignalSprintGameState* GameState = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "GateListeners")
+	TArray<AActor*> GateListeners;
+
+
+	TArray<ASignalGate*> SubscribedGates;
 };
