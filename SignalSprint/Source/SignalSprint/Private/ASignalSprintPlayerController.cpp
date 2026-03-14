@@ -22,56 +22,12 @@ void AASignalSprintPlayerController::BeginPlay()
 			HUDWidgetInstance->AddToViewport();
 		}
 	}
-
-	// RefreshHUD();
 }
 
 void AASignalSprintPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// RefreshHUD();
 }
-
-// void AASignalSprintPlayerController::RefreshHUD()
-// {
-// 	if (!HUDWidgetInstance)
-// 	{
-// 		return;
-// 	}
-//
-// 	ASignalSprintGameState* SignalGameState = GetWorld()->GetGameState<ASignalSprintGameState>();
-// 	if (!SignalGameState) return;
-//
-// 	const int32 NewScore = SignalGameState->GetScore();
-// 	const int32 NewStrikes = SignalGameState->GetStrikes();
-// 	const float NewTimeRemaining = SignalGameState->GetTimeRemaining();
-// 	const FText NewRunState = GetRunStateText(SignalGameState);
-//
-// 	if (NewScore != LastScore)
-// 	{
-// 		LastScore = NewScore;
-// 		HUDWidgetInstance->SetScoreDisplay(NewScore);
-// 	}
-//
-// 	if (NewStrikes != LastStrikes)
-// 	{
-// 		LastStrikes = NewStrikes;
-// 		HUDWidgetInstance->SetStrikesDisplay(NewStrikes, SignalGameState->GetMaxStrikes());
-// 	}
-// 	
-// 	if (NewTimeRemaining != LastTimeRemaining)
-// 	{
-// 		LastTimeRemaining = NewTimeRemaining;
-// 		HUDWidgetInstance->SetTimerDisplay(NewTimeRemaining);
-// 	}
-// 	
-// 	if (!NewRunState.ToString().Equals(LastRunState.ToString()))
-// 	{
-// 		LastRunState = NewRunState;
-// 		HUDWidgetInstance->SetStateDisplay(NewRunState);
-// 	}
-// }
 
 FText AASignalSprintPlayerController::GetRunStateText(class ASignalSprintGameState* SignalGameState) const
 {
