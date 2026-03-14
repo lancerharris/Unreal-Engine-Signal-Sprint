@@ -82,7 +82,7 @@ void ASignalSprintGameState::EndRun()
 
 void ASignalSprintGameState::RetryRun()
 {
-	UGameplayStatics::OpenLevel(this, "SignalSprint");
+	UGameplayStatics::OpenLevel(this, "LevelOne");
 }
 
 void ASignalSprintGameState::UpdateRunTimer(float DeltaTime)

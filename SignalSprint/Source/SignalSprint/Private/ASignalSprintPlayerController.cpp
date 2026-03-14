@@ -31,6 +31,12 @@ void AASignalSprintPlayerController::BeginPlay()
 	}
 }
 
+void AASignalSprintPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GameState) GameState->OnGameStateChanged.RemoveAll(this);
+	Super::EndPlay(EndPlayReason);
+}
+
 void AASignalSprintPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -58,10 +64,15 @@ FText AASignalSprintPlayerController::GetRunStateText(class ASignalSprintGameSta
 
 void AASignalSprintPlayerController::ShowStartMenu()
 {
-	StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Visible);
-	GameOverWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
-	HUDWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (StartMenuWidgetInstance) StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	if (GameOverWidgetInstance) GameOverWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (HUDWidgetInstance) HUDWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+
 	bShowMouseCursor = true;
+
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(StartMenuWidgetInstance->TakeWidget());
+	SetInputMode(InputMode);
 }
 
 void AASignalSprintPlayerController::ShowGameOverMenu()
@@ -73,10 +84,15 @@ void AASignalSprintPlayerController::ShowGameOverMenu()
 	}
 	GameOverWidgetInstance->SetFinalScoreText(GameState->GetScore());
 	
-	StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
-	GameOverWidgetInstance->SetVisibility(ESlateVisibility::Visible);
-	HUDWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (StartMenuWidgetInstance) StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (GameOverWidgetInstance) GameOverWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	if (HUDWidgetInstance) HUDWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+
 	bShowMouseCursor = true;
+
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(StartMenuWidgetInstance->TakeWidget());
+	SetInputMode(InputMode);
 }
 
 void AASignalSprintPlayerController::ShowHUD()
@@ -87,10 +103,13 @@ void AASignalSprintPlayerController::ShowHUD()
 		bHUDWidgetAdded = true;
 	}
 	
-	StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
-	GameOverWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
-	HUDWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	if (StartMenuWidgetInstance) StartMenuWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (GameOverWidgetInstance) GameOverWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+	if (HUDWidgetInstance) HUDWidgetInstance->SetVisibility(ESlateVisibility::Visible);
 	bShowMouseCursor = false;
+	
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
 }
 
 void AASignalSprintPlayerController::HandleRunStateChanged(const FGameStatePayload& GameStatePayload)

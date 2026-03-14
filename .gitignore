@@ -1,20 +1,44 @@
-# Unreal Engine
+# Unreal Engine generated folders
 Binaries/
-Build/
 DerivedDataCache/
 Intermediate/
 Saved/
+
+# IDE
 .vscode/
 .vs/
 .idea/
+
+# Visual Studio
 *.VC.db
+*.VC.opendb
 *.sln
+*.suo
+*.opensdf
+
+# Mac / Xcode
 *.xcodeproj
 *.xcworkspace
+
+# Logs
+*.log
 
 # OS junk
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Crash reports
+crashinfo--*
+
+# Rider
+.idea/
+
+# Python cache (UE tools sometimes generate these)
+__pycache__/
+*.pyc
+
+Windows/
+Builds/
+*.pak
+*.ucas
+*.utoc

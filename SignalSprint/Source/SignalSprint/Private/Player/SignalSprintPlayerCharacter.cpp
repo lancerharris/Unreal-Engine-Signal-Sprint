@@ -62,6 +62,12 @@ void ASignalSprintPlayerCharacter::BeginPlay()
 	}
 }
 
+void ASignalSprintPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GameState) GameState->OnGameStateChanged.RemoveAll(this);
+	Super::EndPlay(EndPlayReason);
+}
+
 // Called to bind functionality to input
 void ASignalSprintPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

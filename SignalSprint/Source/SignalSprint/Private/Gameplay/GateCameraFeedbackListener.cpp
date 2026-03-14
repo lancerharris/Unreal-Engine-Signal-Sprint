@@ -49,17 +49,8 @@ void AGateCameraFeedbackListener::Tick(float DeltaTime)
 
 void AGateCameraFeedbackListener::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
-
-	for (ASignalGate* Gate : SubscribedGates)
-	{
-		if (IsValid(Gate))
-		{
-			Gate->OnGateResolved.RemoveAll(this);
-		}
-	}
-
 	SubscribedGates.Empty();
+	Super::EndPlay(EndPlayReason);
 }
 
 void AGateCameraFeedbackListener::RegisterGate(ASignalGate* Gate)

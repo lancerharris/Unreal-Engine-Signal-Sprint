@@ -20,17 +20,8 @@ void AGateAudioListener::BeginPlay()
 
 void AGateAudioListener::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
-
-	for (ASignalGate* Gate : SubscribedGates)
-	{
-		if (IsValid(Gate))
-		{
-			Gate->OnGateResolved.RemoveAll(this);
-		}
-	}
-
 	SubscribedGates.Empty();
+	Super::EndPlay(EndPlayReason);
 }
 
 void AGateAudioListener::RegisterGate(ASignalGate* Gate)

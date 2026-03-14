@@ -67,6 +67,16 @@ void USignalSprintHUDWidget::NativeConstruct()
 	}
 }
 
+void USignalSprintHUDWidget::NativeDestruct()
+{
+	if (GameState)
+	{
+		GameState->OnGameStateChanged.RemoveAll(this);
+	}
+
+	Super::NativeDestruct();
+}
+
 void USignalSprintHUDWidget::HandleGameStateChanged(const FGameStatePayload& GameStatePayload)
 {
 	if (GameState)

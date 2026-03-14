@@ -53,15 +53,9 @@ void ASignalGateSpawner::Tick(float DeltaTime)
 
 void ASignalGateSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
-	for (ASignalGate* Gate : SubscribedGates)
-	{
-		if (IsValid(Gate))
-		{
-			Gate->OnGateResolved.RemoveAll(this);
-		}
-	}
+	if (GameState) GameState->OnGameStateChanged.RemoveAll(this);
 	SubscribedGates.Empty();
+	Super::EndPlay(EndPlayReason);
 }
 
 void ASignalGateSpawner::TrySpawnGate()

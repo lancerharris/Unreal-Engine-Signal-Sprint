@@ -20,17 +20,8 @@ void AGateVFXListener::RegisterGate(ASignalGate* Gate)
 
 void AGateVFXListener::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::EndPlay(EndPlayReason);
-
-	for (ASignalGate* Gate : SubscribedGates)
-	{
-		if (IsValid(Gate))
-		{
-			Gate->OnGateResolved.RemoveAll(this);
-		}
-	}
-
 	SubscribedGates.Empty();
+	Super::EndPlay(EndPlayReason);
 }
 
 void AGateVFXListener::HandleGateResolved(const FSignalGateResolution& Resolution)
