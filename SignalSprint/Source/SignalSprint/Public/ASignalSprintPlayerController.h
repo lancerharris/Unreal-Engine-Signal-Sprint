@@ -24,7 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void RefreshHUD();
+	// void RefreshHUD();
 	FText GetRunStateText(ASignalSprintGameState* SignalGameState) const;
 
 protected:
@@ -34,9 +34,9 @@ protected:
 	UPROPERTY()
 	USignalSprintHUDWidget* HUDWidgetInstance = nullptr;
 
-	int32 LastScore = -1;
-	int32 LastStrikes = -1;
-	float LastTimeRemaining = 0.0f;
-	FText LastRunState = FText::FromString(TEXT("State: Unknown"));
+	// int32 LastScore = -1;
+	// int32 LastStrikes = -1;
+	// float LastTimeRemaining = 0.0f;
+	// FText LastRunState = FText::FromString(TEXT("State: Unknown"));
 	
 };

@@ -4,6 +4,8 @@
 #include "Blueprint/UserWidget.h"
 #include "SignalSprintHUDWidget.generated.h"
 
+struct FGameStatePayload;
+class ASignalSprintGameState;
 class UTextBlock;
 
 UCLASS()
@@ -12,6 +14,7 @@ class SIGNALSPRINT_API USignalSprintHUDWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	
 	UFUNCTION(BlueprintCallable, Category="HUD")
 	void SetScoreDisplay(int32 NewScore);
 
@@ -25,6 +28,10 @@ public:
 	void SetStateDisplay(const FText& StateLabel);
 
 protected:
+
+	virtual void NativeConstruct() override;
+	
+	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ScoreText;
 
@@ -36,4 +43,8 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* StateText;
+
+	ASignalSprintGameState* GameState = nullptr;
+
+	void HandleGameStateChanged(const FGameStatePayload&);
 };

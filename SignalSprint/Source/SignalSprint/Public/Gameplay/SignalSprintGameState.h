@@ -14,6 +14,21 @@ enum class ESignalSprintRunState : uint8
 	GameOver UMETA(DisplayName = "GameOver")
 };
 
+USTRUCT(BlueprintType)
+struct FGameStatePayload {
+
+	GENERATED_BODY()
+	
+	int32 Score = 0;
+	int32 Strikes = 0;
+	int32 MaxStrikes = 0;
+	float TimeRemaining = 0.0f;
+	ESignalSprintRunState RunState = ESignalSprintRunState::WaitingToStart;
+};
+
+DECLARE_DELEGATE_OneParam(FGameStateChangeDelegate, const FGameStatePayload&)
+
+
 UCLASS()
 class SIGNALSPRINT_API ASignalSprintGameState : public AGameStateBase
 {
@@ -52,8 +67,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="Run")
 	ESignalSprintRunState GetRunState() const { return RunState; }
 
+	FGameStateChangeDelegate OnGameStateChanged;
+
 protected:
 	void UpdateRunTimer(float DeltaTime);
+
+	FGameStatePayload GameStatePayload;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Run")
 	float RunDuration = 60.0f;
@@ -72,4 +91,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Run")
 	ESignalSprintRunState RunState = ESignalSprintRunState::WaitingToStart;
+
+	int32 LastBroadcastSecond = -1;
+
+	
 };
