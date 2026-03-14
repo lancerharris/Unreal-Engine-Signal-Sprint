@@ -3,6 +3,8 @@
 
 #include "Gameplay/SignalSprintGameState.h"
 
+#include "Kismet/GameplayStatics.h"
+
 ASignalSprintGameState::ASignalSprintGameState()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -17,7 +19,6 @@ ASignalSprintGameState::ASignalSprintGameState()
 void ASignalSprintGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	StartRun();
 }
 
 void ASignalSprintGameState::Tick(float DeltaTime)
@@ -36,7 +37,7 @@ void ASignalSprintGameState::AddScore(int32 Amount)
 
 	Score += Amount;
 	GameStatePayload.Score = Score;
-	OnGameStateChanged.ExecuteIfBound(GameStatePayload);
+	OnGameStateChanged.Broadcast(GameStatePayload);
 }
 
 void ASignalSprintGameState::AddStrike(int32 Amount)
@@ -47,7 +48,7 @@ void ASignalSprintGameState::AddStrike(int32 Amount)
 
 	GameStatePayload.Strikes = Strikes;
 	GameStatePayload.MaxStrikes = MaxStrikes;
-	OnGameStateChanged.ExecuteIfBound(GameStatePayload);
+	OnGameStateChanged.Broadcast(GameStatePayload);
 	
 	if (Strikes >= MaxStrikes) EndRun();
 	
@@ -68,7 +69,7 @@ void ASignalSprintGameState::StartRun()
 	GameStatePayload.TimeRemaining = TimeRemaining;
 	GameStatePayload.RunState = RunState;
 
-	OnGameStateChanged.ExecuteIfBound(GameStatePayload);
+	OnGameStateChanged.Broadcast(GameStatePayload);
 }
 
 void ASignalSprintGameState::EndRun()
@@ -76,7 +77,12 @@ void ASignalSprintGameState::EndRun()
 	RunState = ESignalSprintRunState::GameOver;
 
 	GameStatePayload.RunState = RunState;
-	OnGameStateChanged.ExecuteIfBound(GameStatePayload);
+	OnGameStateChanged.Broadcast(GameStatePayload);
+}
+
+void ASignalSprintGameState::RetryRun()
+{
+	UGameplayStatics::OpenLevel(this, "SignalSprint");
 }
 
 void ASignalSprintGameState::UpdateRunTimer(float DeltaTime)
@@ -94,10 +100,9 @@ void ASignalSprintGameState::UpdateRunTimer(float DeltaTime)
 	{
 		LastBroadcastSecond = CurrentDisplaySecond;
 		GameStatePayload.TimeRemaining = CurrentDisplaySecond;
-		OnGameStateChanged.ExecuteIfBound(GameStatePayload);
+		OnGameStateChanged.Broadcast(GameStatePayload);
 	}
-
-
+	
 	if (TimeRemaining <= 0.0f)
 	{
 		EndRun();

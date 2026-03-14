@@ -46,5 +46,10 @@ protected:
 
 	ASignalSprintGameState* GameState = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, Category="HUD")
+	int32 FinalScore = -1;
+
 	void HandleGameStateChanged(const FGameStatePayload&);
+
+	void UpdateFinalScore();
 };

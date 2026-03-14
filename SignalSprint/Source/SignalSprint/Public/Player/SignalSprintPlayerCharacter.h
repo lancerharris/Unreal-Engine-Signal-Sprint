@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Gameplay/SignalSprintGameState.h"
 #include "SignalSprintPlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -49,6 +50,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
 	UInputAction* DebugAddStrikeAction;
-	void DebugAddScore();
-	void DebugAddStrike();
+
+	UPROPERTY()
+	ASignalSprintGameState* GameState = nullptr;
+
+	ESignalSprintRunState LastRunState = ESignalSprintRunState::WaitingToStart;
+
+	void HandleGameStateChanged(const FGameStatePayload& GameStatePayload);
 };

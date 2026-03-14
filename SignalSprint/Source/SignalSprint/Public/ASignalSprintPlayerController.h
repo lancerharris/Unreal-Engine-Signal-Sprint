@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/SignalTypes.h"
 
 #include "GameFramework/PlayerController.h"
+#include "Gameplay/SignalSprintGameState.h"
 #include "ASignalSprintPlayerController.generated.h"
 
 /**
  * 
  */
 
+class USignalSprintGameOverWidget;
+struct FGameStatePayload;
 class USignalSprintHUDWidget;
 class ASignalSprintGameState;
 
@@ -32,4 +36,33 @@ protected:
 
 	UPROPERTY()
 	USignalSprintHUDWidget* HUDWidgetInstance = nullptr;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
+	TSubclassOf<UUserWidget> StartMenuWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI")
+	TSubclassOf<USignalSprintGameOverWidget> GameOverWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* StartMenuWidgetInstance = nullptr;
+	UPROPERTY()
+	USignalSprintGameOverWidget* GameOverWidgetInstance = nullptr;
+
+	ESignalSprintRunState LastRunState = ESignalSprintRunState::WaitingToStart;
+
+	UFUNCTION()
+	void ShowStartMenu();
+	UFUNCTION()
+	void ShowGameOverMenu();
+	UFUNCTION()
+	void ShowHUD();
+	void HandleRunStateChanged(const FGameStatePayload& GameStatePayload);
+
+	UPROPERTY()
+	ASignalSprintGameState* GameState = nullptr;
+
+	
+	bool bGameOverWidgetAdded = false;
+	bool bHUDWidgetAdded = false;
+
+	
 };

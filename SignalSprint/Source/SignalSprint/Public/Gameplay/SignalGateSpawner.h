@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SignalSprintGameState.h"
 #include "GameFramework/Actor.h"
 #include "SignalGateSpawner.generated.h"
 
@@ -37,10 +38,10 @@ protected:
 	TArray<TSubclassOf<ASignalGate>> GateClasses;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	float SpawnInterval = 2.0f;
+	float SpawnInterval = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	float SpawnDistanceAhead = 2000.0f;
+	float SpawnDistanceAhead = 2500.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
 	TArray<float> LaneOffsets = {-800.0f, 0.0f, 800.0f};
@@ -56,9 +57,12 @@ protected:
 	UPROPERTY()
 	ASignalSprintGameState* GameState = nullptr;
 
+	ESignalSprintRunState LastRunState = ESignalSprintRunState::WaitingToStart;
+
+	void HandleGameStateChanged(const FGameStatePayload& GameStatePayload);
+
 	UPROPERTY(EditAnywhere, Category = "GateListeners")
 	TArray<AActor*> GateListeners;
-
 
 	TArray<ASignalGate*> SubscribedGates;
 };

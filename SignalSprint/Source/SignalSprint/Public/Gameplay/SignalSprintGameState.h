@@ -26,8 +26,7 @@ struct FGameStatePayload {
 	ESignalSprintRunState RunState = ESignalSprintRunState::WaitingToStart;
 };
 
-DECLARE_DELEGATE_OneParam(FGameStateChangeDelegate, const FGameStatePayload&)
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FGameStateChangedDelegate, const FGameStatePayload&);
 
 UCLASS()
 class SIGNALSPRINT_API ASignalSprintGameState : public AGameStateBase
@@ -52,6 +51,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Run")
 	void EndRun();
 
+	UFUNCTION(BlueprintCallable, Category = "Run")
+	void RetryRun();
+
 	UFUNCTION(BlueprintPure, Category="Run")
 	float GetTimeRemaining() const { return TimeRemaining; }
 
@@ -67,7 +69,7 @@ public:
 	UFUNCTION(BlueprintPure, Category="Run")
 	ESignalSprintRunState GetRunState() const { return RunState; }
 
-	FGameStateChangeDelegate OnGameStateChanged;
+	FGameStateChangedDelegate OnGameStateChanged;
 
 protected:
 	void UpdateRunTimer(float DeltaTime);

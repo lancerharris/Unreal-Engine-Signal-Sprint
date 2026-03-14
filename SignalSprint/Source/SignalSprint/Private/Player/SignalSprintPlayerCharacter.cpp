@@ -33,7 +33,7 @@ ASignalSprintPlayerCharacter::ASignalSprintPlayerCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 }
 
 void ASignalSprintPlayerCharacter::BeginPlay()
@@ -54,6 +54,12 @@ void ASignalSprintPlayerCharacter::BeginPlay()
 			}
 		}
 	}
+
+	GameState = GetWorld()->GetGameState<ASignalSprintGameState>();
+	if (GameState)
+	{
+		GameState->OnGameStateChanged.AddUObject(this, &ASignalSprintPlayerCharacter::HandleGameStateChanged);
+	}
 }
 
 // Called to bind functionality to input
@@ -67,15 +73,6 @@ void ASignalSprintPlayerCharacter::SetupPlayerInputComponent(UInputComponent* Pl
 		{
 			EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASignalSprintPlayerCharacter::Move);
 		}
-		if (DebugAddScoreAction)
-		{
-			EnhancedInput->BindAction(DebugAddScoreAction, ETriggerEvent::Started, this, &ASignalSprintPlayerCharacter::DebugAddScore);
-		}
-
-		if (DebugAddStrikeAction)
-		{
-			EnhancedInput->BindAction(DebugAddStrikeAction, ETriggerEvent::Started, this, &ASignalSprintPlayerCharacter::DebugAddStrike);
-		}
 	}
 }
 
@@ -83,6 +80,8 @@ void ASignalSprintPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (LastRunState != ESignalSprintRunState::Running) return;
+	
 	if (!CurrentMoveDirection.IsNearlyZero())
 	{
 		AddMovementInput(CurrentMoveDirection, SprintSpeed);
@@ -101,18 +100,15 @@ void ASignalSprintPlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ASignalSprintPlayerCharacter::DebugAddScore()
+void ASignalSprintPlayerCharacter::HandleGameStateChanged(const FGameStatePayload& GameStatePayload)
 {
-	if (ASignalSprintGameState* GameState = GetWorld()->GetGameState<ASignalSprintGameState>())
+	if (LastRunState == GameStatePayload.RunState) return;
+	LastRunState = GameStatePayload.RunState;
+	if (GameStatePayload.RunState == ESignalSprintRunState::Running)
 	{
-		GameState->AddScore(1);
-	}
-}
-
-void ASignalSprintPlayerCharacter::DebugAddStrike()
-{
-	if (ASignalSprintGameState* GameState = GetWorld()->GetGameState<ASignalSprintGameState>())
+		GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+	} else
 	{
-		GameState->AddStrike(1);
+		GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 	}
 }

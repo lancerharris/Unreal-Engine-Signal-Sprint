@@ -54,7 +54,7 @@ void USignalSprintHUDWidget::NativeConstruct()
 	GameState = GetWorld()->GetGameState<ASignalSprintGameState>();
 	if (GameState)
 	{
-		GameState->OnGameStateChanged.BindUObject(this, &USignalSprintHUDWidget::HandleGameStateChanged);
+		GameState->OnGameStateChanged.AddUObject(this, &USignalSprintHUDWidget::HandleGameStateChanged);
 
 		FGameStatePayload InitialPayload;
 		InitialPayload.Score = GameState->GetScore();
@@ -80,6 +80,7 @@ void USignalSprintHUDWidget::HandleGameStateChanged(const FGameStatePayload& Gam
 			SetStateDisplay(FText::FromString(TEXT("Running")));
 			break;
 		case ESignalSprintRunState::GameOver:
+			FinalScore = GameStatePayload.Score;
 			SetStateDisplay(FText::FromString(TEXT("Game Over")));
 			break;
 		case ESignalSprintRunState::WaitingToStart:
@@ -90,3 +91,5 @@ void USignalSprintHUDWidget::HandleGameStateChanged(const FGameStatePayload& Gam
 		}
 	}
 }
+
+

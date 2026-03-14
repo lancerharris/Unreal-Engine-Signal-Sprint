@@ -25,6 +25,10 @@ void ASignalGateSpawner::BeginPlay()
 	TimeUntilNextSpawn = SpawnInterval;
 
 	GameState = GetWorld()->GetGameState<ASignalSprintGameState>();
+	if (GameState)
+	{
+		GameState->OnGameStateChanged.AddUObject(this, &ASignalGateSpawner::HandleGameStateChanged);
+	}
 }
 
 void ASignalGateSpawner::Tick(float DeltaTime)
@@ -36,6 +40,8 @@ void ASignalGateSpawner::Tick(float DeltaTime)
 		return;
 	}
 
+	if (LastRunState != ESignalSprintRunState::Running) return;
+	
 	TimeUntilNextSpawn -= DeltaTime;
 
 	if (TimeUntilNextSpawn <= 0.0f)
@@ -105,5 +111,11 @@ void ASignalGateSpawner::ProcessGateResolutionPayload(const FSignalGateResolutio
 	{
 		GameState->AddStrike(Resolution.Amount);
 	}
+}
+
+void ASignalGateSpawner::HandleGameStateChanged(const FGameStatePayload& GameStatePayload)
+{
+	if (LastRunState == GameStatePayload.RunState) return;
+	LastRunState = GameStatePayload.RunState;
 }
 
